@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aresite - About Us</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="logo">ARESITE</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html" class="active">About Us</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="media.html">Media</a></li>
+                <li><a href="social.html">Media Social</a></li>
+            </ul>
+        </nav>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main>
+        <section class="about-hero">
+            <div class="container">
+                <h1>About Us</h1>
+                <p>Get to know the person behind Aresite</p>
+            </div>
+        </section>
+
+        <section class="about-content">
+            <div class="container">
+                <div class="newspaper-layout">
+                    <div class="newspaper-column">
+                        <div class="newspaper-article fade-in">
+                            <h2 class="newspaper-title">The truth revealed</h2>
+                            <div class="newspaper-meta">
+                                <span class="newspaper-date">September 20, 2025</span>
+                                <span class="newspaper-author">By Radja</span>
+                            </div>
+                            <p class="newspaper-text drop-cap">This all comes from a place where people go to school. I come from a school in East Java—Probolinggo. My name is Areta Ybei Radjawali, but people call me Radja. Many people talk about me, about bad things and other things. I let it all go. I know I won't grow if I listen to it.</p>
+                            <p class="newspaper-text">I used to be very interested in sports, such as soccer and martial arts, but there was one thing I often hid from people: my interest in the world of IT. People often misunderstood me and even criticized me, but that was my choice.</p>
+                        </div>
+                        
+                        <div class="newspaper-article fade-in delay-1">
+                            <h2 class="newspaper-title">This website was created</h2>
+                            <div class="newspaper-meta">
+                                <span class="newspaper-date">July 06, 2024</span>
+                                <span class="newspaper-author">By Radja</span>
+                            </div>
+                            <p class="newspaper-text drop-cap">I created this website with the aim of developing my talents and interests in the virtual world and computers to learn more about how all the devices we use actually work. My main focus is on creating my own website, and in the future, I may create something even bigger, such as a server and so on.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="newspaper-column">
+                        <div class="newspaper-image fade-in delay-2">
+                            <img src="images/profile.jpg" alt="Profile Picture" id="profile-pic">
+                        </div>
+                        
+                        <div class="newspaper-article fade-in delay-3">
+                            <h2 class="newspaper-title">About Me</h2>
+                            <div class="newspaper-meta">
+                                <span class="newspaper-date">July 05, 2000</span>
+                                <span class="newspaper-author">By Radja</span>
+                            </div>
+                            <p class="newspaper-text drop-cap">Hi friends, my name is Areta Ybei Radjawali. Most people call me Radja. In the virtual world, I am better known as Areya or Areybra. I really like sports, especially running and martial arts. I also like IT, namely web design and programming. I want to achieve all of that without any obstacles.</p>
+                            <p class="newspaper-text">I know it's difficult, but I want to do it, so I want to continue my education in a field that focuses on both technology and sports. I am now 15 years old and attending high school.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills">
+            <div class="container">
+                <h2>My Skills & Expertise</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <h3>Web Design</h3>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 50%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <h3>Graphic Design</h3>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <h3>Photography</h3>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 95%;"></div>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <h3>Content Creation</h3>
+                        <div class="skill-bar">
+                            <div class="skill-level" style="width: 80%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ARESITE</h3>
+                <p>© 2025 Aresite. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="media.html">Blog</a></li>
+                    <li><a href="social.html">Media Social</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: contact@aresite.com</p>
+                <p>Phone: +62 821-4296-1010</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Profile picture changer
+        document.getElementById('change-pic-btn').addEventListener('click', function() {
+            document.getElementById('pic-upload').click();
+        });
+
+        document.getElementById('pic-upload').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profile-pic').src = event.target.result;
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    </script>
+
+    <footer class="footer-anim">
+        
+    <div class="footer-cloud"></div>
+<div class="footer-cloud cloud2"></div>
+<div class="footer-cloud cloud3"></div>
+
+<div class="footer-ground">
+    <div class="footer-grass"></div>
+    <div class="footer-grass-blade"></div>
+    <div class="footer-grass-blade g2"></div>
+    <div class="footer-grass-blade g3"></div>
+    <div class="footer-grass-blade g4"></div>
+    <div class="footer-grass-blade g5"></div>
+    <div class="footer-grass-blade g6"></div>
+    <div class="footer-grass-blade g7"></div>
+    <div class="footer-grass-blade g8"></div>
+    <div class="footer-tree">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree2">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree3">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree4">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree5">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-runner"></div>
+    <div class="footer-runner runner2"></div>
+    <div class="footer-runner runner3"></div>
+    <div class="footer-runner runner4"></div>
+    <div class="footer-sea"></div>
+</div>
+    <div class="footer-anim-text">&copy; 2024 Areybra</div>
+</footer>
+</body>
+</html>

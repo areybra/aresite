@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aresite - Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="logo">ARESITE</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="shop.html" class="active">Shop</a></li>
+                <li><a href="media.html">Media</a></li>
+                <li><a href="#" id="cart-link">Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="social.html">Media Social</a></li>
+            </ul>
+        </nav>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main>
+        <section class="shop-hero">
+            <div class="container">
+                <h1>Our Products</h1>
+                <p class="typing-text"></p>
+            </div>
+        </section>
+
+        <section class="products">
+            <div class="container">
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="file">File</button>
+                    <button class="filter-btn" data-filter="mapping">Mapping</button>
+                    <button class="filter-btn" data-filter="content">Content Creator</button>
+                </div>
+
+                <div class="products-grid" id="products-container">
+                    <!-- Products will be loaded here via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Your Cart</h2>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be loaded here -->
+                <p class="empty-cart">Your cart is empty</p>
+            </div>
+            <div class="cart-total">
+                <p>Total: <span id="cart-total">Rp 0</span></p>
+            </div>
+            <div class="cart-actions">
+                <button class="btn" id="clear-cart">Clear Cart</button>
+                <button class="btn" id="checkout-btn">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Payment Method</h2>
+            <div class="payment-options">
+                <!-- Payment options will be loaded by JavaScript -->
+            </div>
+            <button class="btn" id="confirm-payment">Confirm Payment</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ARESITE</h3>
+                <p>© 2025 Aresite. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="media.html">Blog</a></li>
+                    <li><a href="social.html">Media Social</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: aretaradjawali@gmail.com</p>
+                <p>Phone: +62 821-4296-1010</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        // Your specific product data
+        const products = [
+            // File Category
+            {
+                id: 1,
+                name: "Scan Keylogger",
+                price: 50000,
+                image: "images/products/file/scan-keylogger.jpg",
+                category: "file",
+                description: "File untuk mendeteksi keylogger pada game GTA SAMP milik anda. Mampu bekerja dengan baik dan teruji."
+            },
+            {
+                id: 2,
+                name: "Keylogger",
+                price: 10000,
+                image: "images/products/file/keylogger.jpg",
+                category: "file",
+                description: "File untuk mengambil username dan password pemain serta server untuk anda gunakan sendiri."
+            },
+            
+            // Mapping Category
+            {
+                id: 3,
+                name: "El Corona Complex",
+                price: 10000,
+                image: "images/products/mapping/el-corona-complex.jpg",
+                category: "mapping",
+                description: "El corona dengan vibes LA 90s. Terjamin tidak berat dan pantas untuk dipakai roleplay."
+            },
+            
+            // Content Creator Category
+            {
+                id: 4,
+                name: "Livestream",
+                price: 10000,
+                image: "images/products/content-creator/livestream.jpg",
+                category: "content",
+                description: "Saya akan mempromosikan server anda melalui livestream di media sosial saya (Harga per Jam)."
+            },
+            {
+                id: 5,
+                name: "Video Content",
+                price: 5000,
+                image: "images/products/content-creator/video-content.jpg",
+                category: "content",
+                description: "Saya akan membuat video promosi untuk server anda (Harga per 2 menit konten)."
+            }
+        ];
+
+        let currentPage = 1;
+        const productsPerPage = 6; // Show all products on one page
+        let filteredProducts = [...products];
+
+        function displayProducts() {
+            const productsContainer = document.getElementById('products-container');
+            productsContainer.innerHTML = '';
+            
+            filteredProducts.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = `product-card ${product.category}`;
+                productElement.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p class="price">Rp ${product.price.toLocaleString('id-ID')}</p>
+                        <div class="product-description">
+                            <p>${product.description}</p>
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn add-to-cart" data-id="${product.id}">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+                productsContainer.appendChild(productElement);
+            });
+        }
+
+        // Typing animation for hero text
+        function typeText(element, text, speed) {
+            let i = 0;
+            element.textContent = '';
+            function typing() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(typing, speed);
+                }
+            }
+            typing();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            displayProducts();
+            
+            // Typing animation
+            const typingElement = document.querySelector('.typing-text');
+            const texts = [
+                "Specialized GTA SAMP Products", 
+                "Quality Digital Services",
+                "Enhance Your Gaming Experience"
+            ];
+            let currentTextIndex = 0;
+            
+            typeText(typingElement, texts[currentTextIndex], 100);
+            
+            setInterval(() => {
+                currentTextIndex = (currentTextIndex + 1) % texts.length;
+                typeText(typingElement, texts[currentTextIndex], 100);
+            }, 3000);
+            
+            // Filter products
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.getAttribute('data-filter');
+                    if (filter === 'all') {
+                        filteredProducts = [...products];
+                    } else {
+                        filteredProducts = products.filter(product => product.category === filter);
+                    }
+                    
+                    displayProducts();
+                });
+            });
+            
+            // Initialize cart functionality
+            initCart();
+        });
+    </script>
+
+    <footer class="footer-anim">
+        
+    <div class="footer-cloud"></div>
+<div class="footer-cloud cloud2"></div>
+<div class="footer-cloud cloud3"></div>
+
+<div class="footer-ground">
+    <div class="footer-grass"></div>
+    <div class="footer-grass-blade"></div>
+    <div class="footer-grass-blade g2"></div>
+    <div class="footer-grass-blade g3"></div>
+    <div class="footer-grass-blade g4"></div>
+    <div class="footer-grass-blade g5"></div>
+    <div class="footer-grass-blade g6"></div>
+    <div class="footer-grass-blade g7"></div>
+    <div class="footer-grass-blade g8"></div>
+    <div class="footer-tree">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree2">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree3">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree4">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-tree tree5">
+        <div class="tree-trunk"></div>
+        <div class="tree-leaf"></div>
+    </div>
+    <div class="footer-runner"></div>
+    <div class="footer-runner runner2"></div>
+    <div class="footer-runner runner3"></div>
+    <div class="footer-runner runner4"></div>
+    <div class="footer-sea"></div>
+</div>
+    <div class="footer-anim-text">&copy; 2024 Areybra</div>
+</footer>
+</body>
+</html>

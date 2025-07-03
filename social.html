@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Social - Aresite</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Snow animation */
+        body.social-page-body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            overflow-x: hidden;
+        }
+        .snow {
+            pointer-events: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+        }
+        /* Navbar */
+        nav {
+            background: rgba(34, 40, 49, 0.95);
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 3vw;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #00adb5;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px #2226;
+        }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-links li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .nav-links li a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 0;
+            background: #00adb5;
+            transition: width 0.3s;
+            position: absolute;
+            left: 0; bottom: -4px;
+        }
+        .nav-links li a:hover, .nav-links li a.active {
+            color: #00adb5;
+        }
+        .nav-links li a:hover::after, .nav-links li a.active::after {
+            width: 100%;
+        }
+        /* Social Container */
+        .social-container {
+            max-width: 420px;
+            margin: 4rem auto 2rem auto;
+            background: rgba(34, 40, 49, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            padding: 2.5rem 2rem 2rem 2rem;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s cubic-bezier(.23,1.01,.32,1) 0.2s both;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px);}
+            to   { opacity: 1; transform: translateY(0);}
+        }
+        .social-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .social-profile-pic {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #00adb5;
+            box-shadow: 0 4px 24px #00adb555;
+            margin-bottom: 1rem;
+            transition: transform 0.4s cubic-bezier(.23,1.01,.32,1);
+        }
+        .social-profile-pic:hover {
+            transform: scale(1.08) rotate(-6deg);
+            box-shadow: 0 8px 32px #00adb5aa;
+        }
+        .social-header h1 {
+            color: #fff;
+            font-size: 2rem;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0.2rem 0 0.3rem 0;
+            letter-spacing: 1px;
+        }
+        .social-header p {
+            color: #00adb5;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 1px;
+        }
+        /* Social Links */
+        .social-links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            margin-top: 1rem;
+        }
+        .social-link-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            background: linear-gradient(90deg, #00adb5 0%, #00c3ff 100%);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 0.85rem 0;
+            text-decoration: none;
+            box-shadow: 0 2px 12px #00adb533;
+            transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+            position: relative;
+            overflow: hidden;
+        }
+        .social-link-button:hover {
+            transform: translateY(-4px) scale(1.04);
+            background: linear-gradient(90deg, #00c3ff 0%, #00adb5 100%);
+            box-shadow: 0 8px 32px #00adb555;
+        }
+        .social-link-button::before {
+            content: '';
+            position: absolute;
+            left: -60px;
+            top: 0;
+            width: 40px;
+            height: 100%;
+            background: rgba(255,255,255,0.13);
+            transform: skewX(-20deg);
+            transition: left 0.4s;
+        }
+        .social-link-button:hover::before {
+            left: 110%;
+        }
+        /* Footer */
+        .social-footer {
+            text-align: center;
+            color: #aaa;
+            padding: 2rem 0 1rem 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            z-index: 2;
+            position: relative;
+        }
+        /* Responsive */
+        @media (max-width: 600px) {
+            .social-container {
+                padding: 1.2rem 0.5rem 1.2rem 0.5rem;
+                margin: 2.5rem 0.5rem 1.5rem 0.5rem;
+            }
+            nav {
+                flex-direction: column;
+                gap: 0.7rem;
+                padding: 1rem 2vw;
+            }
+            .logo { font-size: 1.3rem; }
+            .nav-links { gap: 1rem; }
+        }
+    </style>
+</head>
+<body class="social-page-body">
+    <canvas class="snow"></canvas>
+    <nav>
+        <div class="logo">Aresite</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="media.html">Blog</a></li>
+            <li><a href="social.html" class="active">Media Social</a></li>
+        </ul>
+    </nav>
+
+    <div class="social-container">
+        <div class="social-header">
+            <img src="images/profile.jpg" alt="Foto Profil" class="social-profile-pic">
+            <h1>Areybra</h1>
+            <p>Roleplayer &nbsp;/&nbsp; Modder &nbsp;/&nbsp; Mapper</p>
+        </div>
+        <div class="social-links-list">
+            <a href="https://instagram.com/areybraa" target="_blank" class="social-link-button">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram" width="22" height="22" style="filter:invert(1);"> Instagram
+            </a>
+            <a href="https://tiktok.com/@areyawe" target="_blank" class="social-link-button">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok" width="22" height="22" style="filter:invert(1);"> TikTok
+            </a>
+            <a href="https://www.youtube.com/channel/areyawe" target="_blank" class="social-link-button">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg" alt="YouTube" width="22" height="22" style="filter:invert(1);"> YouTube Channel
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=6282142961010" target="_blank" class="social-link-button">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg" alt="WhatsApp" width="22" height="22" style="filter:invert(1);"> WhatsApp
+            </a>
+            <a href="https://areybra.github.io/areweb/" target="_blank" class="social-link-button">
+                <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/internetarchive.svg" alt="Website" width="22" height="22" style="filter:invert(1);"> Official Website
+            </a>
+        </div>
+    </div>
+
+    <footer class="social-footer">
+        <p>&copy; 2025 Areybra</p>
+    </footer>
+
+    <!-- Snow Animation Script -->
+    <script>
+        // Snowfall effect
+        const canvas = document.querySelector('.snow');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let snowflakes = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function createSnowflakes() {
+            const x = Math.random() * width;
+            const y = Math.random() * -height;
+            const radius = Math.random() * 2.2 + 1.2;
+            const speed = Math.random() * 1.5 + 0.5;
+            const opacity = Math.random() * 0.6 + 0.3;
+            return {x, y, radius, speed, opacity};
+        }
+
+        function drawSnowflakes() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.save();
+            ctx.globalCompositeOperation = "lighter";
+            for (let flake of snowflakes) {
+                ctx.beginPath();
+                ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255,255,255,${flake.opacity})`;
+                ctx.shadowColor = "#fff";
+                ctx.shadowBlur = 8;
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        function updateSnowflakes() {
+            for (let flake of snowflakes) {
+                flake.y += flake.speed;
+                flake.x += Math.sin(flake.y / 40) * 0.7;
+                if (flake.y > height + 5) {
+                    flake.x = Math.random() * width;
+                    flake.y = Math.random() * -20;
+                }
+            }
+        }
+
+        function snowLoop() {
+            if (snowflakes.length < 70) {
+                snowflakes.push(createSnowflakes());
+            }
+            updateSnowflakes();
+            drawSnowflakes();
+            requestAnimationFrame(snowLoop);
+        }
+        snowLoop();
+    </script>
+</body>
+</html>

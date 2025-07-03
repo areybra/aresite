@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Detail | Aresite</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="logo">ARESITE</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="media.html">Media</a></li>
+                <li><a href="social.html">Media Social</a></li>
+            </ul>
+        </nav>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </header>
+
+    <main>
+        <section class="blog-detail-hero">
+            <div class="container">
+                <h1 id="blog-title" class="fade-in">Loading...</h1>
+                <p id="blog-date" class="fade-in delay-1"></p>
+            </div>
+        </section>
+
+        <section class="blog-detail-content">
+            <div class="container newspaper-style">
+                <div class="loading-animation" id="loading-anim">
+                    <div class="cube"></div>
+                    <div class="cube"></div>
+                    <div class="cube"></div>
+                </div>
+                
+                <div class="blog-content" id="blog-content" style="display: none;">
+                    <div class="blog-image fade-in delay-2">
+                        <img id="blog-main-image" src="" alt="Blog Image">
+                    </div>
+                    <article id="blog-article" class="fade-in delay-3 newspaper-fold">
+                        <!-- Content will be loaded by JavaScript -->
+                    </article>
+                    <div class="blog-meta fade-in delay-4">
+                        <p>Published in <span id="blog-category">General</span></p>
+                        <a href="media.html" class="btn">Back to Blog</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ARESITE</h3>
+                <p>© 2023 Aresite. All rights reserved.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="media.html">Blog</a></li>
+                    <li><a href="social.html">Media Social</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: contact@aresite.com</p>
+                <p>Phone: +62 821-4296-1010</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Sample blog data
+        const blogs = {
+            1: {
+                title: "The Emergence of Areya in Valiant Roleplay",
+                date: "July 03, 2025",
+                image: "images/profile.jpg",
+                category: "Story",
+                content: `
+                    <p class="drop-cap">Areya used to be someone unknown to anyone, because Areya was just a fictional name used in a game.</p>
+                    
+                    <h2>Built and then recognized</h2>
+                    <p>It's just a game, but it's memorable—that's the perfect way to describe it. I used to play on the LunarPride Community and Jogjagamer Reality Project servers, but I got bored with that, so I tried out Valiant Roleplay in my community at the time. I just signed up out of curiosity, with no real plans in mind. However, since I knew I had an opportunity here, I applied to become one of the staff members of Valiant Roleplay, and at that time I was in charge of the LSFD and LSGMC factions, which were very challenging but also very rewarding.\n \n My friends trusted me at that time and Walley assigned me to be the General Administrator, a high-ranking position with a lot of responsibility. At that time, I was impressed by the new way of working pioneered by the new members. I admit that I was not as good as them, but I was there, and I was not to be underestimated. I thought, if not now, then when? Should I quit? I didn't have much time left.</p>
+                    
+                    <blockquote>
+                        "Perfection that must be covered up by destiny - By areya"
+                    </blockquote>
+                    
+                    <div class="newspaper-columns">
+                        <div class="column">
+                            <h3>Thank you for your time and space.</h3>
+                            <p>Valiant Roleplay, I'll be back, wait for me.</p>
+                        </div>
+                        <div class="column">
+                            <h3>Dear friends,</h3>
+                            <p>I often say this: It's good to see you again.</p>
+                        </div>
+                    </div>
+                    
+                    <p>Signed By Areya</p>
+                `
+            },
+            2: {
+                title: "Sustainable Business Practices",
+                date: "June 2, 2025",
+                image: "images/blog2.jpg",
+                category: "Business",
+                content: `
+                    <p class="drop-cap">Sustainability is more than just a buzzword—it's a responsibility that every business should embrace in today's world.</p>
+                    
+                    <h2>Our Green Initiatives</h2>
+                    <p>At Aresite, we've implemented several eco-friendly practices that have transformed how we operate:</p>
+                    
+                    <div class="newspaper-columns">
+                        <div class="column">
+                            <h3>Eco Packaging</h3>
+                            <p>We use 100% recycled materials for all our packaging, and we've reduced plastic use by 85% compared to traditional packaging methods.</p>
+                        </div>
+                        <div class="column">
+                            <h3>Carbon Neutral Shipping</h3>
+                            <p>All our shipments are carbon-neutral through partnerships with environmental organizations that offset our emissions.</p>
+                        </div>
+                    </div>
+                    
+                    <h2>The Business Case for Sustainability</h2>
+                    <p>Beyond being the right thing to do, sustainable practices actually benefit our business in measurable ways:</p>
+                    <ul>
+                        <li><strong>57% of consumers</strong> are willing to pay more for sustainable products</li>
+                        <li><strong>Employee satisfaction</strong> has increased by 32% since implementing these policies</li>
+                        <li>We've <strong>reduced operational costs</strong> by 12% through energy efficiency measures</li>
+                    </ul>
+                    
+                    <blockquote>
+                        "We don't inherit the earth from our ancestors, we borrow it from our children." — Native American Proverb
+                    </blockquote>
+                    
+                    <h2>Getting Started</h2>
+                    <p>If you're looking to make your business more sustainable, start with these simple steps:</p>
+                    <ol>
+                        <li>Conduct an energy audit of your facilities</li>
+                        <li>Switch to renewable energy sources where possible</li>
+                        <li>Implement a recycling program</li>
+                        <li>Choose eco-friendly suppliers and partners</li>
+                        <li>Educate your team about sustainability practices</li>
+                    </ol>
+                `
+            },
+            // Add more blog posts as needed
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const blogId = urlParams.get('id');
+            const blog = blogs[blogId];
+            
+            if (blog) {
+                // Set initial content
+                document.getElementById('blog-title').textContent = blog.title;
+                document.getElementById('blog-date').textContent = blog.date;
+                
+                // Simulate loading delay
+                setTimeout(() => {
+                    document.getElementById('loading-anim').style.display = 'none';
+                    document.getElementById('blog-content').style.display = 'block';
+                    
+                    document.getElementById('blog-main-image').src = blog.image;
+                    document.getElementById('blog-main-image').alt = blog.title;
+                    document.getElementById('blog-category').textContent = blog.category;
+                    document.getElementById('blog-article').innerHTML = blog.content;
+                }, 1200);
+            } else {
+                window.location.href = 'media.html';
+            }
+        });
+    </script>
+</body>
+</html>
