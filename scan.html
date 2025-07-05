@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ZIP File Scanner</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+      :root {
+        --primary: #6d4c41;
+        --secondary: #d7ccc8;
+        --accent: #8d6e63;
+        --dark: #3e2723;
+        --light: #efebe9;
+        --warning: #bf360c;
+        --safe: #2e7d32;
+        --suspicious: #ff9800;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: var(--light);
+        color: var(--dark);
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      header {
+        background-color: var(--dark);
+        color: white;
+        padding: 30px 0 0 0;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .main-navbar {
+        width: 100%;
+        background: rgba(44, 34, 28, 0.98);
+        border-radius: 10px 10px 0 0;
+        box-shadow: 0 2px 12px #0002;
+        margin-bottom: 22px;
+        padding: 0 0 0 0;
+        position: relative;
+        z-index: 10;
+      }
+      .main-navbar ul {
+        display: flex;
+        gap: 18px;
+        list-style: none;
+        justify-content: center;
+        padding: 0 0 0 0;
+        margin: 0;
+      }
+      .main-navbar li {
+        display: flex;
+        align-items: center;
+      }
+      .main-navbar a {
+        display: block;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-family: "Montserrat", "Roboto", sans-serif;
+        font-size: 1.05rem;
+        padding: 12px 22px 10px 22px;
+        border-radius: 6px 6px 0 0;
+        transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+        letter-spacing: 0.5px;
+        position: relative;
+      }
+      .main-navbar a.active,
+      .main-navbar a:hover {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 16px #0001;
+        text-shadow: 0 1px 4px #0003;
+      }
+      .main-navbar a.active::after,
+      .main-navbar a:hover::after {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        bottom: 4px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        opacity: 0.7;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+
+      .scanner-section {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+
+      .upload-area {
+        border: 3px dashed var(--accent);
+        padding: 50px 20px;
+        text-align: center;
+        margin: 20px 0;
+        border-radius: 8px;
+        transition: all 0.3s;
+      }
+
+      .upload-area:hover {
+        background-color: rgba(141, 110, 99, 0.1);
+      }
+
+      .btn {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s;
+        font-weight: bold;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        background-color: var(--dark);
+      }
+
+      .result-section {
+        display: none;
+        margin-top: 30px;
+      }
+
+      .file-list {
+        list-style-type: none;
+        padding: 0;
+      }
+
+      .file-item {
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: var(--light);
+        border-left: 4px solid var(--accent);
+        border-radius: 4px;
+      }
+
+      .file-item.warning {
+        border-left-color: var(--warning);
+        background-color: rgba(191, 54, 12, 0.1);
+      }
+
+      .file-item.suspicious {
+        border-left-color: var(--suspicious);
+        background-color: rgba(255, 152, 0, 0.1);
+      }
+
+      .file-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      .file-path {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 5px;
+        font-family: monospace;
+      }
+
+      .file-status {
+        font-size: 0.9rem;
+      }
+
+      .status-warning {
+        color: var(--warning);
+        font-weight: bold;
+      }
+
+      .status-suspicious {
+        color: var(--suspicious);
+        font-weight: bold;
+      }
+
+      .pattern-match {
+        background-color: rgba(191, 54, 12, 0.2);
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-family: monospace;
+        display: inline-block;
+        margin: 2px;
+        font-size: 0.8rem;
+      }
+
+      .progress-bar {
+        width: 100%;
+        background-color: var(--secondary);
+        border-radius: 4px;
+        margin: 20px 0;
+        overflow: hidden;
+      }
+
+      .progress {
+        height: 20px;
+        background-color: var(--accent);
+        width: 0%;
+        transition: width 0.3s;
+        text-align: center;
+        color: white;
+        font-size: 0.8rem;
+        line-height: 20px;
+      }
+
+      .summary {
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-weight: bold;
+      }
+
+      .summary.safe {
+        background-color: rgba(46, 125, 50, 0.1);
+        color: var(--safe);
+        border-left: 4px solid var(--safe);
+      }
+
+      .summary.warning {
+        background-color: rgba(191, 54, 12, 0.1);
+        color: var(--warning);
+        border-left: 4px solid var(--warning);
+      }
+
+      .summary.suspicious {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: var(--suspicious);
+        border-left: 4px solid var(--suspicious);
+      }
+
+      .file-icon {
+        margin-right: 10px;
+        font-size: 1.2em;
+      }
+
+      .detection-count {
+        font-weight: bold;
+        margin-left: 5px;
+      }
+
+      .folder-contents {
+        margin-left: 20px;
+        border-left: 2px solid var(--secondary);
+        padding-left: 15px;
+        margin-top: 10px;
+      }
+
+      .toggle-details-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 12px;
+        font-size: 0.92rem;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-left: 10px;
+      }
+
+      .toggle-details-btn:hover {
+        background: var(--primary);
+      }
+
+      .file-details {
+        margin-top: 10px;
+        background: #f8f8f8;
+        border-radius: 6px;
+        padding: 10px 12px;
+      }
+
+      .code-preview-title {
+        font-weight: 500;
+        color: var(--warning);
+        font-size: 0.95rem;
+        margin-bottom: 4px;
+      }
+
+      .code-preview {
+        background: #23272e;
+        color: #f8f8f2;
+        border-radius: 6px;
+        padding: 10px;
+        font-size: 0.92rem;
+        margin-top: 2px;
+        margin-bottom: 6px;
+        overflow-x: auto;
+        max-height: 220px;
+        line-height: 1.5;
+        font-family: "Fira Mono", "Consolas", "Menlo", monospace;
+        box-shadow: 0 2px 8px #0001;
+      }
+
+      .pattern-highlight {
+        background: #ff9800;
+        color: #222;
+        border-radius: 2px;
+        padding: 0 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <nav class="main-navbar" style="margin-bottom: 18px">
+          <ul
+            style="
+              display: flex;
+              gap: 18px;
+              list-style: none;
+              justify-content: center;
+              padding: 0;
+              margin: 0;
+            "
+          >
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="media.html">Media</a></li>
+            <li><a href="social.html">Media Social</a></li>
+            <li><a href="scan.html" class="active">Scan ZIP</a></li>
+          </ul>
+        </nav>
+        <h1 style="font-size: 2.2rem; letter-spacing: 1px; margin-bottom: 8px">
+          🔍 ZIP File Scanner
+        </h1>
+        <p style="font-size: 1.1rem; opacity: 0.85">
+          Pindai file ZIP untuk pola keylogger secara instan
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="scanner-section">
+        <h2 style="font-size: 1.4rem; margin-bottom: 8px">
+          1. Upload ZIP File
+        </h2>
+        <p style="margin-bottom: 18px">
+          Unggah file ZIP untuk memindai isi file dari pola keylogger yang
+          berbahaya.
+        </p>
+
+        <div
+          class="upload-area"
+          id="dropZone"
+          style="
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+          "
+        >
+          <div style="font-size: 2.5rem">📦</div>
+          <div style="font-size: 1.1rem; font-weight: 500">
+            Drag & drop ZIP file di sini
+          </div>
+          <div style="font-size: 0.95rem; opacity: 0.7">atau</div>
+          <input
+            type="file"
+            id="fileInput"
+            accept=".zip"
+            style="display: none"
+          />
+          <button
+            class="btn"
+            onclick="document.getElementById('fileInput').click()"
+          >
+            Pilih ZIP File
+          </button>
+          <div style="font-size: 0.9rem; color: #888; margin-top: 4px">
+            Hanya file ZIP yang didukung
+          </div>
+        </div>
+
+        <div class="result-section" id="resultSection">
+          <h2 style="font-size: 1.2rem; margin-top: 0; margin-bottom: 10px">
+            2. Hasil Scan
+          </h2>
+          <div class="progress-bar" style="margin-bottom: 18px">
+            <div class="progress" id="progressBar">0%</div>
+          </div>
+
+          <div id="scanSummary" style="margin-bottom: 18px"></div>
+
+          <div
+            style="
+              display: flex;
+              flex-wrap: wrap;
+              gap: 30px;
+              align-items: flex-start;
+            "
+          >
+            <div style="flex: 1 1 320px; min-width: 260px">
+              <h3 style="font-size: 1.08rem; margin-bottom: 8px">
+                📁 Struktur ZIP
+              </h3>
+              <div id="zipStructure"></div>
+            </div>
+            <div style="flex: 2 1 400px; min-width: 280px">
+              <h3 style="font-size: 1.08rem; margin-bottom: 8px">
+                🦠 Hasil Deteksi
+              </h3>
+              <ul class="file-list" id="fileList"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Keylogger patterns
+      const KEYLOGGER_PATTERNS = [
+        "discord\\.com/api/webhooks",
+        "webhook\\.site",
+        "sendMessageToDiscord",
+        "ssl\\.https",
+        "socket\\.http",
+        "ltn12",
+        "io\\.popen",
+        "bit\\.bxor",
+        "xor\\s*\\(",
+        "string\\.char",
+        "string\\.byte",
+        "table\\.concat",
+        "loadstring",
+        "load\\s*\\(",
+        "sampGetPlayerNickname",
+        "sampGetCurrentServerAddress",
+        "onSendDialogResponse",
+        "SetWindowsHookExA",
+        "GetAsyncKeyState",
+        "GetKeyState",
+        "GetKeyboardState",
+        "HttpSendRequestA",
+        "InternetOpenA",
+        "InternetConnectA",
+        "WSAStartup",
+        "send",
+        "CreateFileA",
+        "WriteFile",
+        "fopen",
+        "keylogger",
+        "stealer",
+      ];
+
+      // DOM elements
+      const fileInput = document.getElementById("fileInput");
+      const dropZone = document.getElementById("dropZone");
+      const resultSection = document.getElementById("resultSection");
+      const fileList = document.getElementById("fileList");
+      const scanSummary = document.getElementById("scanSummary");
+      const progressBar = document.getElementById("progressBar");
+      const zipStructure = document.getElementById("zipStructure");
+
+      // Set up event listeners
+      fileInput.addEventListener("change", handleFileSelect);
+
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = "rgba(141, 110, 99, 0.2)";
+      });
+
+      dropZone.addEventListener("dragleave", () => {
+        dropZone.style.backgroundColor = "";
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.style.backgroundColor = "";
+
+        if (e.dataTransfer.files.length) {
+          fileInput.files = e.dataTransfer.files;
+          handleFileSelect({ target: fileInput });
+        }
+      });
+
+      // Main file handling function
+      async function handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith(".zip")) {
+          alert("Please upload a ZIP file");
+          return;
+        }
+
+        // Show results section
+        resultSection.style.display = "block";
+        fileList.innerHTML = "";
+        zipStructure.innerHTML = "";
+        scanSummary.innerHTML = "<p>Extracting ZIP contents...</p>";
+        progressBar.style.width = "0%";
+        progressBar.textContent = "0%";
+
+        try {
+          // Process ZIP file
+          const zip = await JSZip.loadAsync(file);
+          const files = [];
+          const fileNames = Object.keys(zip.files);
+          let totalFiles = 0;
+
+          // Count text files first
+          fileNames.forEach((filename) => {
+            if (!zip.files[filename].dir) {
+              totalFiles++;
+            }
+          });
+
+          if (totalFiles === 0) {
+            scanSummary.innerHTML = `
+                        <div class="summary safe">
+                            No files found in the ZIP archive.
+                        </div>
+                    `;
+            return;
+          }
+
+          // Display ZIP structure as a collapsible tree
+          function buildZipTree(files) {
+            const root = {};
+            for (const name of Object.keys(files)) {
+              const parts = name.split("/").filter(Boolean);
+              let node = root;
+              for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+                if (!node[part]) {
+                  node[part] =
+                    i === parts.length - 1 && !files[name].dir ? null : {};
+                }
+                node = node[part] || {};
+              }
+            }
+            return root;
+          }
+
+          function createTreeElement(node, parentPath = "") {
+            const ul = document.createElement("ul");
+            ul.style.listStyle = "none";
+            ul.style.margin = "0 0 0 18px";
+            ul.style.padding = "0";
+            for (const key of Object.keys(node)) {
+              const value = node[key];
+              const li = document.createElement("li");
+              if (value === null) {
+                // File
+                li.innerHTML = `<span style=\"font-size:1.1em;\">📄</span> <span>${key}</span>`;
+              } else {
+                // Folder
+                const folderId = `folder-${Math.random()
+                  .toString(36)
+                  .substr(2, 8)}`;
+                // Use a button for toggling to ensure event works after DOM insertion
+                const folderBtn = document.createElement("button");
+                folderBtn.type = "button";
+                folderBtn.style.background = "none";
+                folderBtn.style.border = "none";
+                folderBtn.style.cursor = "pointer";
+                folderBtn.style.fontSize = "1.1em";
+                folderBtn.style.padding = "0 2px 0 0";
+                folderBtn.textContent = "📂";
+                folderBtn.setAttribute("aria-label", "Toggle folder");
+                folderBtn.onclick = function () {
+                  const el = document.getElementById(folderId);
+                  if (el.style.display === "none") {
+                    el.style.display = "block";
+                    folderBtn.textContent = "📁";
+                  } else {
+                    el.style.display = "none";
+                    folderBtn.textContent = "📂";
+                  }
+                };
+                li.appendChild(folderBtn);
+                const folderName = document.createElement("span");
+                folderName.style.fontWeight = "500";
+                folderName.textContent = key;
+                li.appendChild(folderName);
+                const childUl = createTreeElement(
+                  value,
+                  parentPath + key + "/"
+                );
+                childUl.id = folderId;
+                childUl.style.display = "none";
+                li.appendChild(childUl);
+              }
+              ul.appendChild(li);
+            }
+            return ul;
+          }
+
+          // Build and render the tree
+          const tree = buildZipTree(zip.files);
+          zipStructure.innerHTML = "";
+          zipStructure.appendChild(createTreeElement(tree));
+
+          // Process each file in the ZIP (scan for keylogger)
+          let scannedFiles = 0;
+          let suspiciousFiles = 0;
+          let keyloggerFiles = 0;
+
+          for (const filename of fileNames) {
+            const fileData = zip.files[filename];
+            if (!fileData.dir) {
+              // Try to read as text
+              try {
+                const content = await fileData.async("text");
+                const matches = checkForKeyloggers(content);
+
+                scannedFiles++;
+                updateProgress(scannedFiles, totalFiles);
+
+                if (matches.length > 0) {
+                  if (matches.length >= 3) {
+                    keyloggerFiles++;
+                  } else {
+                    suspiciousFiles++;
+                  }
+                  addFileToList(filename, matches, true, file.name);
+                }
+              } catch (e) {
+                // Skip binary files
+                scannedFiles++;
+                updateProgress(scannedFiles, totalFiles);
+                continue;
+              }
+            }
+          }
+
+          // Update summary
+          updateSummary(totalFiles, suspiciousFiles, keyloggerFiles);
+        } catch (error) {
+          console.error("Error processing ZIP file:", error);
+          scanSummary.innerHTML = `
+                    <div class="summary warning">
+                        Error processing ZIP file: ${error.message}
+                    </div>
+                `;
+        }
+      }
+
+      // Check file content for keylogger patterns
+      function checkForKeyloggers(content) {
+        const foundPatterns = [];
+
+        KEYLOGGER_PATTERNS.forEach((pattern) => {
+          try {
+            const regex = new RegExp(pattern, "i");
+            if (regex.test(content)) {
+              foundPatterns.push(pattern.replace(/\\/g, ""));
+            }
+          } catch (e) {
+            console.error(`Error with pattern ${pattern}:`, e);
+          }
+        });
+
+        return foundPatterns;
+      }
+
+      // Update progress bar
+      function updateProgress(scanned, total) {
+        const progress = Math.floor((scanned / total) * 100);
+        progressBar.style.width = `${progress}%`;
+        progressBar.textContent = `${progress}%`;
+      }
+
+      // Update summary
+      function updateSummary(total, suspicious, keyloggers) {
+        if (keyloggers > 0) {
+          scanSummary.innerHTML = `
+                    <div class="summary warning">
+                        ⚠️ Found ${keyloggers} files with high likelihood of being keyloggers (3+ patterns detected)
+                        and ${suspicious} suspicious files (out of ${total} scanned)
+                    </div>
+                `;
+        } else if (suspicious > 0) {
+          scanSummary.innerHTML = `
+                    <div class="summary suspicious">
+                        ⚠️ Found ${suspicious} suspicious files (out of ${total} scanned)
+                    </div>
+                `;
+        } else {
+          scanSummary.innerHTML = `
+                    <div class="summary safe">
+                        ✓ No keylogger patterns found in ${total} scanned files
+                    </div>
+                `;
+        }
+      }
+
+      // Add a file to the results list
+      function addFileToList(
+        filename,
+        matches,
+        fromZip,
+        zipName,
+        fileContent = null
+      ) {
+        const li = document.createElement("li");
+        li.className =
+          matches.length >= 3 ? "file-item warning" : "file-item suspicious";
+        li.style.position = "relative";
+
+        const icon =
+          filename.endsWith(".lua") || filename.endsWith(".luac")
+            ? "📄"
+            : filename.endsWith(".asi")
+            ? "⚙️"
+            : "📄";
+
+        const statusClass =
+          matches.length >= 3 ? "status-warning" : "status-suspicious";
+        const statusText =
+          matches.length >= 3
+            ? "Kemungkinan besar keylogger"
+            : "Kecil kemungkinan keylogger";
+
+        // Toggle button for details
+        const toggleId = "toggle-" + Math.random().toString(36).substr(2, 8);
+        const toggleBtn = `<button class="toggle-details-btn" onclick="const d=document.getElementById('${toggleId}');d.style.display=d.style.display==='none'?'block':'none';this.textContent=d.style.display==='none'?'Lihat Detil':'Sembunyikan';">Lihat Detil</button>`;
+
+        // Details section (hidden by default)
+        let details = `<div class="file-details" id="${toggleId}" style="display:none;">`;
+        details += `<div class='file-status'><b>Detected patterns:</b> ${matches
+          .map((m) => `<span class='pattern-match'>${m}</span>`)
+          .join(" ")}</div>`;
+        if (fileContent) {
+          // Highlight patterns in code
+          let code = fileContent;
+          try {
+            matches.forEach((pattern) => {
+              const regex = new RegExp(pattern, "gi");
+              code = code.replace(
+                regex,
+                (match) => `<mark class='pattern-highlight'>${match}</mark>`
+              );
+            });
+          } catch {}
+          let lines = code.split(/\r?\n/);
+          if (lines.length > 20)
+            code = lines.slice(0, 20).join("\n") + "\n... (truncated)";
+          details += `<div class='code-preview-title'>Cuplikan kode:</div><pre class='code-preview'>${code
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")}</pre>`;
+        }
+        details += "</div>";
+
+        li.innerHTML = `
+                <div style="display:flex;align-items:center;gap:10px;justify-content:space-between;">
+                    <div>
+                        <span class="file-icon">${icon}</span>
+                        <span class="file-name">${filename}</span>
+                        ${
+                          fromZip
+                            ? `<span class="file-path">(from ${zipName})</span>`
+                            : ""
+                        }
+                    </div>
+                    <div class="file-status ${statusClass}">${statusText}</div>
+                    ${matches.length > 0 ? toggleBtn : ""}
+                </div>
+                ${matches.length > 0 ? details : ""}
+            `;
+        fileList.appendChild(li);
+      }
+    </script>
+  </body>
+</html>
